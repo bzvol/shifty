@@ -12,7 +12,18 @@ class APIEndpoints {
   static String swaps(String employeeId) =>
       '$v3/employees/$employeeId/available_swaps';
 
-  static String assignShift(String shiftId) => '$v2/unassigned_shifts/$shiftId/assign';
+  static String assignShift(String shiftId) =>
+      '$v2/unassigned_shifts/$shiftId/assign';
 
   static String swapShift(String shiftId) => '$v2/shifts/$shiftId/swap';
+
+  static String employeeData(
+    String employeeId, {
+    bool withFields = false,
+    withContracts = false,
+    withCity = false,
+    withStartingPoints = false,
+    withSuspensionDates = false,
+  }) =>
+      '$v2/employees/$employeeId?with_fields=$withFields&with_contracts=$withContracts&with_city=$withCity&with_starting_points=$withStartingPoints&with_suspension_dates=$withSuspensionDates';
 }

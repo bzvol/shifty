@@ -1,23 +1,36 @@
-import '../controller/rooster_api.dart';
+import 'package:shifty/controller/debugger.dart';
+
+import '../controller/api.dart';
 
 class User {
   late final String name;
   final String email;
   final String id;
   final String _password;
-  late String _bearerToken;
+  late String _bearer;
 
-  /*factory User.createWithAuth(String email, String id, String password) async {
-    final user = User(email, id, password);
-    user._bearerToken = 'Bearer ' + ;
-    return user;
-  }*/
+  late final String phone;
+  late final int group;
 
-  static Future<User> createWithAuth(String email, String id, String password) async {
-    final user = User(email, id, password);
-    user._bearerToken = 'Bearer ${await RoosterAPI.auth(email, password)}';
+  static Future<User> create(String email, String id, String password) async {
+    final user = User._create(email, id, password);
+    await user._init();
+
     return user;
   }
 
-  User(this.email, this.id, String password) : _password = password;
+  User._create(this.email, this.id, this._password);
+
+  Future<void> _refreshBearer() async {
+    _bearer = 'Bearer ${await API.auth(email, _password)}';
+  }
+
+  Future<void> _init() async {
+    await _refreshBearer();
+    final data = await API.getEmployeeData(_bearer, id);
+
+    name = data['name'];
+    phone = data['phone_number'];
+    group = data['batch_number'];
+  }
 }
