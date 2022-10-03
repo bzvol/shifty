@@ -1,4 +1,4 @@
-import 'package:shifty/controller/debugger.dart';
+import 'package:shifty/model/shift.dart';
 
 import '../controller/api.dart';
 
@@ -11,6 +11,7 @@ class User {
 
   late final String phone;
   late final int group;
+  late final int cityId;
 
   static Future<User> create(String email, String id, String password) async {
     final user = User._create(email, id, password);
@@ -32,5 +33,16 @@ class User {
     name = data['name'];
     phone = data['phone_number'];
     group = data['batch_number'];
+    cityId = data['city']['id'];
+  }
+
+  Future<void> searchShifts(DateTime start, DateTime end) async {
+    Shift.searchResults = await API.getShifts(
+        _bearer,
+        id,
+        cityId,
+        start: start,
+        end: end,
+      );
   }
 }

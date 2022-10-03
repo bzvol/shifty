@@ -16,9 +16,8 @@ class Debugger {
   }
 
   static void addResponse(Response response) {
-    responses.add(response);
     final stateObject = context?.findAncestorStateOfType<HomePageState>();
-    stateObject?.refresh();
+    stateObject?.refreshDebugger(responses, response);
   }
 }
 
