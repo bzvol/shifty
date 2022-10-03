@@ -5,6 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart';
 import 'package:shifty/controller/api.dart';
 import 'package:shifty/controller/debugger.dart';
+import 'package:shifty/model/zones.dart';
 
 import '../main.dart';
 import '../model/shift.dart';
@@ -32,51 +33,54 @@ class HomePageState extends State<HomePage> {
         ),
         drawer: Drawer(
             child: SafeArea(
-          child: ListView(padding: const EdgeInsets.all(16), children: [
-            if (kDebugMode) ...[
-              const Text('HTTP Responses',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-              const SizedBox(height: 16),
-              ...Debugger.responses
-                  .map((response) => HttpResponseCard(response)),
-            ]
-          ]),
-        )),
+              child: ListView(padding: const EdgeInsets.all(16), children: [
+                if (kDebugMode) ...[
+                  const Text('HTTP Responses',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 24)),
+                  const SizedBox(height: 16),
+                  ...Debugger.responses
+                      .map((response) => HttpResponseCard(response)),
+                ]
+              ]),
+            )),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
               _loggedIn
                   ? ShiftSearch(
-                      onLogout: () {
-                        setState(() => {
-                              _loggedIn = false,
-                              App.user = null,
-                            });
-                      },
-                      loginFormFields: loginFormFields,
-                    )
+                onLogout: () {
+                  setState(() =>
+                  {
+                    _loggedIn = false,
+                    App.user = null,
+                  });
+                },
+                loginFormFields: loginFormFields,
+              )
                   : LoginForm(onLogin: (formKey) {
-                      setState(() => {
-                            loginFormFields = formKey.currentState!.fields,
-                            _loggedIn = true,
-                          });
-                    }),
+                setState(() =>
+                {
+                  loginFormFields = formKey.currentState!.fields,
+                  _loggedIn = true,
+                });
+              }),
             ],
           ),
         ));
   }
 
-  void refreshDebugger(List<Response> list, Response response) => setState(() {
+  void refreshDebugger(List<Response> list, Response response) =>
+      setState(() {
         list = [...list, response];
       });
 }
 
 class ShiftSearch extends StatefulWidget {
-  const ShiftSearch(
-      {Key? key,
-      required Function onLogout,
-      required Map<String, dynamic> loginFormFields})
+  const ShiftSearch({Key? key,
+    required Function onLogout,
+    required Map<String, dynamic> loginFormFields})
       : _onLogout = onLogout,
         _loginFormFields = loginFormFields,
         super(key: key);
@@ -119,10 +123,13 @@ class _ShiftSearchState extends State<ShiftSearch> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Expanded(
-                      child: ListView(
-                        children: Shift.searchResults.map((s) => Text("- ${s.zo}")),
-                      )
-                    )
+                        child: ListView(
+                          children: Shift.searchResults.map((s) =>
+                              Text("- ${zones[s.zoneId]} ${s.start
+                                  .toString()} -> ${s.end.toString()} (${s.type
+                                  .toString()})")).toList(),
+                        )
+                    );
                   }
                   else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
