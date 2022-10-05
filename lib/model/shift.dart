@@ -17,7 +17,7 @@ class Shift {
   factory Shift.fromJson(Map<String, dynamic> json,
           {required ShiftType type}) =>
       Shift._create(
-          id: json['id'],
+          id: json['id'] ?? json['shift_id'],
           start: DateTime.parse(json['start'] + 'Z'),
           end: DateTime.parse(json['end'] + 'Z'),
           zoneId: json['starting_point_id'],

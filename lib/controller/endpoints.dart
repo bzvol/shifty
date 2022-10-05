@@ -6,22 +6,22 @@ class APIEndpoints {
 
   static String shifts(String employeeId,
       {required DateTime start, required DateTime end, required int cityId}) {
-    var startIso = start.toIso8601String();
-    var endIso = end.toIso8601String();
+    var startIso = '${start.toIso8601String()}Z';
+    var endIso = '${end.toIso8601String()}Z';
     return '$v3/employees/$employeeId/shifts?start_at=$startIso&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
   }
 
   static String unassignedShifts(String employeeId,
       {required DateTime start, required DateTime end, required int cityId}) {
-    var startIso = start.toIso8601String();
-    var endIso = end.toIso8601String();
+    var startIso = '${start.toIso8601String()}Z';
+    var endIso = '${end.toIso8601String()}Z';
     return '$v3/employees/$employeeId/available_unassigned_shifts?start_at=$startIso&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
   }
 
   static String swaps(String employeeId,
       {required DateTime start, required DateTime end, required int cityId}) {
-    var startIso = start.toIso8601String();
-    var endIso = end.toIso8601String();
+    var startIso = '${start.toIso8601String()}Z';
+    var endIso = '${end.toIso8601String()}Z';
     return '$v3/employees/$employeeId/available_swaps?start_at=$startIso&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
   }
 

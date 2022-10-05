@@ -51,6 +51,7 @@ class HttpResponseCard extends StatelessWidget {
             child: Container(
               color: Colors.grey[300],
               padding: const EdgeInsets.all(8),
+              height: 300,
               child: Text(_tryJsonParse(_response.body),
                   style: const TextStyle(fontFamily: 'Ubuntu Mono')),
             ),

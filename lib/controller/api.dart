@@ -66,9 +66,14 @@ class API {
     Debugger.addResponse(assignedShiftsResponse);
     if (assignedShiftsResponse.statusCode == 200) {
       var assignedShifts = jsonDecode(assignedShiftsResponse.body);
-      shifts.addAll(assignedShifts
-          .map((s) => Shift.fromJson(s, type: ShiftType.assigned)));
+      if (assignedShifts.length > 0) {
+        shifts.addAll((assignedShifts as List)
+            .map((s) => Shift.fromJson(s, type: ShiftType.assigned))
+            .toList());
+      }
     } else {
+      Debugger.log(
+          'Failed to get assigned shifts\n${assignedShiftsResponse.statusCode} ${assignedShiftsResponse.reasonPhrase}\n${assignedShiftsResponse.body}');
       throw Exception('Failed to get assigned shifts');
     }
 
@@ -91,8 +96,11 @@ class API {
         s['start'] = DateTime.parse(s['start']).add(tzOffset).toIso8601String();
         s['end'] = DateTime.parse(s['end']).add(tzOffset).toIso8601String();
       });
-      shifts.addAll(
-          uaShifts.map((s) => Shift.fromJson(s, type: ShiftType.unassigned)));
+      if (uaShifts.length > 0) {
+        shifts.addAll((uaShifts as List)
+            .map((s) => Shift.fromJson(s, type: ShiftType.unassigned))
+            .toList());
+      }
     } else {
       throw Exception('Failed to get unassigned shifts');
     }
@@ -109,7 +117,10 @@ class API {
     Debugger.addResponse(swapsResponse);
     if (swapsResponse.statusCode == 200) {
       var swaps = jsonDecode(swapsResponse.body);
-      shifts.addAll(swaps.map((s) => Shift.fromJson(s, type: ShiftType.swap)));
+      if (swaps.length > 0) {
+        shifts.addAll(
+            (swaps as List).map((s) => Shift.fromJson(s, type: ShiftType.swap)).toList());
+      }
     } else {
       throw Exception('Failed to get swaps');
     }

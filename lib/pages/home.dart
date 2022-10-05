@@ -33,54 +33,51 @@ class HomePageState extends State<HomePage> {
         ),
         drawer: Drawer(
             child: SafeArea(
-              child: ListView(padding: const EdgeInsets.all(16), children: [
-                if (kDebugMode) ...[
-                  const Text('HTTP Responses',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24)),
-                  const SizedBox(height: 16),
-                  ...Debugger.responses
-                      .map((response) => HttpResponseCard(response)),
-                ]
-              ]),
-            )),
+          child: ListView(padding: const EdgeInsets.all(16), children: [
+            if (kDebugMode) ...[
+              const Text('HTTP Responses',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+              const SizedBox(height: 16),
+              ...Debugger.responses
+                  .map((response) => HttpResponseCard(response)),
+            ]
+          ]),
+        )),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
               _loggedIn
                   ? ShiftSearch(
-                onLogout: () {
-                  setState(() =>
-                  {
-                    _loggedIn = false,
-                    App.user = null,
-                  });
-                },
-                loginFormFields: loginFormFields,
-              )
+                      onLogout: () {
+                        setState(() => {
+                              _loggedIn = false,
+                              App.user = null,
+                            });
+                      },
+                      loginFormFields: loginFormFields,
+                    )
                   : LoginForm(onLogin: (formKey) {
-                setState(() =>
-                {
-                  loginFormFields = formKey.currentState!.fields,
-                  _loggedIn = true,
-                });
-              }),
+                      setState(() => {
+                            loginFormFields = formKey.currentState!.fields,
+                            _loggedIn = true,
+                          });
+                    }),
             ],
           ),
         ));
   }
 
-  void refreshDebugger(List<Response> list, Response response) =>
-      setState(() {
+  void refreshDebugger(List<Response> list, Response response) => setState(() {
         list = [...list, response];
       });
 }
 
 class ShiftSearch extends StatefulWidget {
-  const ShiftSearch({Key? key,
-    required Function onLogout,
-    required Map<String, dynamic> loginFormFields})
+  const ShiftSearch(
+      {Key? key,
+      required Function onLogout,
+      required Map<String, dynamic> loginFormFields})
       : _onLogout = onLogout,
         _loginFormFields = loginFormFields,
         super(key: key);
@@ -113,35 +110,27 @@ class _ShiftSearchState extends State<ShiftSearch> {
               const SizedBox(height: 24.0),
               UserCard(App.user!),
               const SizedBox(height: 24.0),
-              /*ElevatedButton(
-                onPressed: () => {
-
-                },
-                child: const Text('Search'),
-              ),*/
               FutureBuilder(
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Expanded(
-                        child: ListView(
-                          children: Shift.searchResults.map((s) =>
-                              Text("- ${zones[s.zoneId]} ${s.start
-                                  .toString()} -> ${s.end.toString()} (${s.type
-                                  .toString()})")).toList(),
-                        )
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return ListView(
+                      children: Shift.searchResults
+                          .map((s) => Text(
+                              "- ${zones[s.zoneId]} ${s.start.toString()} -> ${s.end.toString()} (${s.type.toString()})"))
+                          .toList(),
                     );
-                  }
-                  else if (snapshot.hasError) {
+                  } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
-                  return const LinearProgressIndicator();
+                  return const LinearProgressIndicator(minHeight: 15);
                 },
                 future: App.user!.searchShifts(_getStart(), _getEnd()),
-              )
+              ),
+              const Text("Teszt"),
             ],
           );
         }
-        return const CircularProgressIndicator();
+        return const LinearProgressIndicator(minHeight: 15);
       },
       future: User.create(email, id, password),
     );
