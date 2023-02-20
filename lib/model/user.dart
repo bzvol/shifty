@@ -3,6 +3,8 @@ import 'package:shifty/model/shift.dart';
 import '../controller/api.dart';
 
 class User {
+  static User? instance;
+
   late final String name;
   final String email;
   final String id;
@@ -14,13 +16,13 @@ class User {
   late final int cityId;
 
   static Future<User> create(String email, String id, String password) async {
-    final user = User._create(email, id, password);
+    final user = User._(email, id, password);
     await user._init();
 
     return user;
   }
 
-  User._create(this.email, this.id, this._password);
+  User._(this.email, this.id, this._password);
 
   Future<void> _refreshBearer() async {
     _bearer = 'Bearer ${await API.auth(email, _password)}';

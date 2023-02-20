@@ -1,28 +1,31 @@
+import 'package:shifty/model/shift.dart';
+
 class APIEndpoints {
   static const String base = 'https://hu.usehurrier.com/api';
   static const String v2 = '$base/rooster/v2';
   static const String v3 = '$base/rooster/v3';
   static const String auth = '$base/user/auth'; // response: 201
 
-  static String shifts(String employeeId,
+  static String shifts(ShiftType shiftType, String employeeId,
       {required DateTime start, required DateTime end, required int cityId}) {
-    var startIso = '${start.toIso8601String()}Z';
-    var endIso = '${end.toIso8601String()}Z';
-    return '$v3/employees/$employeeId/shifts?start_at=$startIso&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
-  }
+    final startIso = '${start.toIso8601String()}Z';
+    final endIso = '${end.toIso8601String()}Z';
 
-  static String unassignedShifts(String employeeId,
-      {required DateTime start, required DateTime end, required int cityId}) {
-    var startIso = '${start.toIso8601String()}Z';
-    var endIso = '${end.toIso8601String()}Z';
-    return '$v3/employees/$employeeId/available_unassigned_shifts?start_at=$startIso&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
-  }
+    String typeRoute;
+    switch (shiftType) {
+      case ShiftType.assigned:
+        typeRoute = 'shifts';
+        break;
+      case ShiftType.unassigned:
+        typeRoute = 'available_unassigned_shifts';
+        break;
+      case ShiftType.swap:
+        typeRoute = 'available_swaps';
+        break;
+    }
 
-  static String swaps(String employeeId,
-      {required DateTime start, required DateTime end, required int cityId}) {
-    var startIso = '${start.toIso8601String()}Z';
-    var endIso = '${end.toIso8601String()}Z';
-    return '$v3/employees/$employeeId/available_swaps?start_at=$startIso&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
+    return '$v3/employees/$employeeId/$typeRoute?start_at=$startIso'
+        '&end_at=$endIso&city_id=$cityId&with_time_zone=Europe%2FBudapest';
   }
 
   static String assignShift(String shiftId) =>
@@ -39,5 +42,8 @@ class APIEndpoints {
     withStartingPoints = false,
     withSuspensionDates = false,
   }) =>
-      '$v2/employees/$employeeId?with_fields=$withFields&with_contracts=$withContracts&with_city=$withCity&with_starting_points=$withStartingPoints&with_suspension_dates=$withSuspensionDates';
+      '$v2/employees/$employeeId?with_fields=$withFields'
+      '&with_contracts=$withContracts&with_city=$withCity'
+      '&with_starting_points=$withStartingPoints'
+      '&with_suspension_dates=$withSuspensionDates';
 }

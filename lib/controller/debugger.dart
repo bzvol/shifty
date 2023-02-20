@@ -1,23 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'dart:convert';
-
-import '../pages/home.dart';
 
 class Debugger {
-  static List<Response> responses = [];
-  static BuildContext? context;
-
   static void log(String message) {
     if (kDebugMode) {
       print(message);
     }
-  }
-
-  static void addResponse(Response response) {
-    final stateObject = context?.findAncestorStateOfType<HomePageState>();
-    stateObject?.refreshDebugger(responses, response);
   }
 }
 
